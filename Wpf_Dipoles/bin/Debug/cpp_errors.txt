@@ -1,0 +1,11 @@
+===== n = 3  nN = 5
+===== condLeft = 1  condRight = 2
+x[0] = 0  mData = 1
+x[1] = 0.2  mData = 1.2
+x[2] = 0.5  mData = 0.5
+===== nN = 5
+xUni[0] = 0
+xUni[1] = 0.1
+xUni[2] = 0.2
+xUni[3] = 0.3
+xUni[4] = 0.5

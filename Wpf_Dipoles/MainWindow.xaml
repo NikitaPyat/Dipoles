@@ -1,0 +1,281 @@
+﻿<Window x:Class="Wpf_Dipoles.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Wpf_Dipoles"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="750" Width="1300" Loaded="Window_Loaded">
+
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Open"
+                    Executed="OpenCommandHandler" />
+
+        <CommandBinding Command="ApplicationCommands.Save"
+                    Executed="SaveCommandHandler" 
+                    CanExecute="CanSaveCommandHandler"/>
+
+        <!--<CommandBinding Command="ApplicationCommands.Delete"
+                    Executed="RemoveCommandHandler" 
+                    CanExecute="CanRemoveCommandHandler"/>-->
+
+        <!--<CommandBinding Command="{x:Static local:CustomCommands.AddCustomCommand}"
+                        CanExecute="CanAddCustomCommandHandler"
+                        Executed="AddCustomCommandHandler"/>-->
+
+        <!--<CommandBinding Command="{x:Static local:CustomCommands.ModelCommand}"
+                        CanExecute="CanModelCommandHandler"
+                        Executed="ModelCommandHandler"/>-->
+        <CommandBinding Command="{x:Static local:CustomCommands.FieldsCommand}"
+                        CanExecute="CanFieldsCommandHandler"
+                        Executed="FieldsCommandHandler"/>
+        <CommandBinding Command="{x:Static local:CustomCommands.FlamCommand}"
+                        CanExecute="CanFlamCommandHandler"
+                        Executed="FlamCommandHandler"/>
+        <CommandBinding Command="{x:Static local:CustomCommands.DrawCommand}"
+                        CanExecute="CanDrawCommandHandler"
+                        Executed="DrawCommandHandler"/>
+    </Window.CommandBindings>
+
+    <Window.Resources>
+
+        <!--<local:dblConverter x:Key="key_dblConverter"/>-->
+        <!--<local:measuredDataConverter x:Key="key_measuredDataConverter"/>-->
+
+
+        <Style TargetType="TextBlock" x:Key="key_style_collectionChanged" >
+            <Setter Property="Control.FontFamily" Value="Calibri" />
+            <Setter Property="Control.FontWeight" Value="Bold" />
+            <Setter Property="Control.FontSize" Value="14" />
+            <Setter Property="Control.Foreground" Value="Red" />
+        </Style>
+
+        <Style TargetType="TextBlock"  x:Key="key_style_selection" >
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError"  Value="True">
+                    <Setter Property="Control.Foreground" Value="Red"/>
+                    <Setter Property="TextBlock.Text" Value= "(Validation.Errors)[0].ErrorContent)"/>
+                </Trigger>
+                <Trigger Property="Validation.HasError"  Value="False">
+                    <Setter Property="Control.Foreground" Value="Black"/>
+                </Trigger>
+            </Style.Triggers>
+
+        </Style>
+
+        <Style  x:Key ="key_style_header">
+            <Setter Property="Control.HorizontalAlignment" Value="Left"/>
+            <Setter Property="Control.VerticalAlignment" Value="Top"/>
+            <Setter Property="Control.FontFamily" Value="Calibri" />
+            <Setter Property="Control.FontSize" Value="14" />
+            <Setter Property="Control.FontStyle" Value="Italic" />
+            <Setter Property="Control.Foreground" Value="SlateBlue" />
+        </Style>
+
+        <DataTemplate x:Key="key_template_Spline">
+            <StackPanel Orientation="Vertical" Margin="2">
+
+                <TextBlock  Text=" " />
+                <TextBlock  Text="{Binding Path=MKL_FUNC}" Width="120" />
+                <TextBlock  Text="{Binding Path=n}" />
+                <TextBlock  Text=" " />
+
+            </StackPanel>
+        </DataTemplate>
+   </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="20*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+      
+        <Grid  Grid.Row="1"  Margin="10" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="5*"/>
+                </Grid.RowDefinitions>
+
+            <Grid Name ="grid_fldComp"  Grid.Row="1">
+                <StackPanel  Orientation = "Vertical" Grid.Row="2" Margin="10,10,10,2">
+                    <ComboBox Name="comboBox_Field" HorizontalAlignment="Stretch" Grid.Column="1" Margin="20,4,20,0"  VerticalAlignment="Top" 
+                   SelectedItem="{Binding FC}" />
+                    <StackPanel Orientation="Horizontal" Margin="2,20,2,10">
+                        <TextBlock  Text="nro= " Width="60"/>
+                        <TextBox Name="textBox_nro"  Text="{Binding nro, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"   Width="200"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <TextBlock  Text="ro min = " Width="60"/>
+                        <TextBox Name="textBox_roMin" Text="{Binding roMin, ValidatesOnDataErrors=True}"   Width="200"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <TextBlock  Text="ro max = " Width="60"/>
+                        <TextBox Name="textBox_roMax" Text="{Binding roMax, ValidatesOnDataErrors=True}"   Width="200"/>
+                    </StackPanel>
+                    <Button Content="Fields" Grid.Row="4" Margin="15,20,15,0" VerticalAlignment="Center"
+                    Command="{x:Static local:CustomCommands.FieldsCommand}"/>
+                </StackPanel>
+            </Grid>
+                
+             <Grid Grid.Row="0" Name ="grid_model">
+                <Grid   Margin="0,0,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock  Margin="10" VerticalAlignment="Top" Text="Параметры" Style="{StaticResource key_style_header}"/>
+
+                    <StackPanel  Orientation = "Vertical"  Margin="10,40,10,2">
+                        <StackPanel Orientation="Horizontal" Margin="2">
+                            <TextBlock  Text="ro = " Width="50"/>
+                            <TextBox Name="textBox_ro" Text="{Binding ro, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Width="100"  />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="2,15,2,2">
+                            <TextBlock  Text="z0 = " Width="50"/>
+                            <TextBox Name="textBox_z0" Text="{Binding z0, ValidatesOnDataErrors=True}" Width="100"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="2">
+                            <TextBlock  Text="z = " Width="50"/>
+                            <TextBox Name="textBox_z" Text="{Binding z, ValidatesOnDataErrors=True}" Width="100"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="2,20,2,2">
+                            <TextBlock  Text="omega = " Width="50"/>
+                            <TextBox Name="textBox_omega" Text="{Binding omega, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="2">
+                            <TextBlock  Text="wave = " Width="50"/>
+                            <TextBlock  Text="{Binding wave}" Width="100"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <TextBlock  Margin="10" VerticalAlignment="Top" Text="Параметры среды" 
+                            Style="{StaticResource key_style_header}" HorizontalAlignment="Left" Grid.Column="1"/>
+                    <StackPanel  Orientation = "Vertical"  Margin="10,40,10,2" Grid.Column="1">
+                        <StackPanel Orientation="Horizontal" Margin="2">
+                            <TextBlock  Text="eps1 = " Width="50"/>
+                            <TextBox Name="textBox_eps1" Text="{Binding eps1, ValidatesOnDataErrors=True}" Width="100"  />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="2">
+                            <TextBlock  Text="eps2 = " Width="50"/>
+                            <TextBox Name="textBox_eps2" Text="{Binding eps2, ValidatesOnDataErrors=True}" Width="100"  />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="2">
+                            <TextBlock  Text="h = " Width="50"/>
+                            <TextBox Name="textBox_h" Text="{Binding h, ValidatesOnDataErrors=True}" Width="100"  />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="2" Name ="grid_lam">
+                    <StackPanel  Orientation = "Vertical" Grid.Row="2" Margin="10,10,10,2">
+                <ComboBox Name="comboBox_Func" HorizontalAlignment="Stretch" Grid.Column="1" Margin="20,4,20,0"  VerticalAlignment="Top" 
+                   SelectedItem="{Binding F}" />
+                <StackPanel Orientation="Horizontal" Margin="2,20,2,10">
+                    <TextBlock  Text="n = " Width="60"/>
+                    <TextBox Name="textBox_n"  Text="{Binding n, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"   Width="200"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="2">
+                    <TextBlock  Text="lam min = " Width="60"/>
+                    <TextBox Name="textBox_lamL" Text="{Binding lamL, ValidatesOnDataErrors=True}"   Width="200"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="2">
+                    <TextBlock  Text="lam max = " Width="60"/>
+                    <TextBox Name="textBox_lamR" Text="{Binding lamR, ValidatesOnDataErrors=True}"   Width="200"/>
+                </StackPanel>
+
+                    <StackPanel Orientation="Vertical" Margin="2,10,2,0">
+                        <RadioButton Name="radiobutton_0k0" Content="[0,k0]"  Click="radiobutton_0k0_Click"/>
+                        <RadioButton Name="radiobutton_k0k1" Content="[k0,k1]" Click="radiobutton_k0k1_Click"/>
+                        <RadioButton Name="radiobutton_k1k2" Content="[k1,k2]" Click="radiobutton_k1k2_Click"/>
+                        <RadioButton Name="radiobutton_k0n" Content="[0.99 * k0, 1.01 * k0]"  Click="radiobutton_k0near_Click"/>
+                        <RadioButton Name="radiobutton_k1n" Content="[0.99 * k1, 1.01 * k1]" Click="radiobutton_k1near_Click"/>
+                        <RadioButton Name="radiobutton_k2n" Content="[0.99 * k2, 1.01 * k2]" Click="radiobutton_k2near_Click"/>
+                    </StackPanel>
+
+                    <!--<StackPanel Orientation="Vertical" Margin="2,10,2,0">
+                    <RadioButton Name="radiobutton_Decart" Content="Uniform"  IsChecked="{Binding lamIsUniform}"/>
+                    <RadioButton Name="radiobutton_Log" Content="Log" />
+                </StackPanel>-->
+
+                <Button Content="F(lam)" Grid.Row="4" Margin="15,30,15,0" VerticalAlignment="Center"
+                Command="{x:Static local:CustomCommands.FlamCommand}"/>
+             
+                </StackPanel>
+        </Grid>
+        </Grid>
+
+        <Grid  Margin="10" Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.5*"/>
+                <RowDefinition Height="8*"/>
+                <RowDefinition Height="5*"/>
+            </Grid.RowDefinitions>
+            <TextBlock  Margin="0" VerticalAlignment="Top" HorizontalAlignment="Center" Text="Re part" Style="{StaticResource key_style_header}"/>
+            <WindowsFormsHost Name ="winFormsHost_L" Grid.Row="1"
+                        HorizontalAlignment="Stretch"  Margin="2" VerticalAlignment="Stretch"/>
+            <ListBox Name ="listBox_InfoDataL" Grid.Row="2" Margin="10"  ItemsSource="{Binding infoList}" />
+        </Grid>
+
+        <Grid Name="grid_fields" Grid.Row="1" Grid.Column="2" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.5*"/>
+                <RowDefinition Height="8*"/>
+                <RowDefinition Height="5*"/>
+            </Grid.RowDefinitions>
+            <TextBlock  Margin="0" VerticalAlignment="Top" HorizontalAlignment="Center" Text="Im part" Style="{StaticResource key_style_header}"/>
+            <WindowsFormsHost Name ="winFormsHost_R" Grid.Row="1"
+                        HorizontalAlignment="Stretch"  Margin="2" VerticalAlignment="Stretch"/>
+            <ListBox Name ="listBox_InfoDataR" Grid.Row="2" Margin="10"  ItemsSource="{Binding infoList}" />
+            <!--<StackPanel  Orientation = "Vertical" Grid.Row="2" Margin="10,10,10,2">
+                <ComboBox Name="comboBox_Func" HorizontalAlignment="Stretch" Grid.Column="1" Margin="20,4,20,0"  VerticalAlignment="Top" 
+                   SelectedItem="{Binding F}" />
+                <StackPanel Orientation="Horizontal" Margin="2,20,2,10">
+                    <TextBlock  Text="n = " Width="60"/>
+                    <TextBox Name="textBox_n"  Text="{Binding n, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"   Width="100"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="2">
+                    <TextBlock  Text="lam min = " Width="60"/>
+                    <TextBox Name="textBox_lamL" Text="{Binding lamL, ValidatesOnDataErrors=True}"   Width="100"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="2">
+                    <TextBlock  Text="lam max = " Width="60"/>
+                    <TextBox Name="textBox_lamR" Text="{Binding lamR, ValidatesOnDataErrors=True}"   Width="100"/>
+                </StackPanel>
+               
+                <StackPanel Orientation="Vertical" Margin="2,10,2,0">
+                    <RadioButton Name="radiobutton_Decart" Content="Uniform"  IsChecked="{Binding lamIsUniform}"/>
+                    <RadioButton Name="radiobutton_Log" Content="Log" />
+                </StackPanel>
+                
+                <Button Content="Fields" Grid.Row="4" Margin="15,30,15,0" VerticalAlignment="Center"
+                Command="{x:Static local:CustomCommands.FieldsCommand}"/>
+            </StackPanel>-->
+        </Grid>
+
+        <Menu Margin="0,0,0,0" >
+            <MenuItem Header="File">
+                <MenuItem Header="New"/>
+                <MenuItem Header="Open" Command="Open"/>
+                <MenuItem Header="Save" Command="ApplicationCommands.Save" />
+            </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Model" Command="{x:Static local:CustomCommands.ModelCommand}"/>
+                <MenuItem Header="Fields" Command="{x:Static local:CustomCommands.FieldsCommand}"/>
+            </MenuItem>
+        </Menu>
+ 
+    </Grid>
+</Window>
+
