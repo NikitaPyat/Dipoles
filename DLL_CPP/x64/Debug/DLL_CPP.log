@@ -1,0 +1,10 @@
+﻿  pch.cpp
+  DipoleFields.cpp
+  dllmain.cpp
+  splines.cpp
+D:\EM_Docs_2022\Projects\Wpf_Dipoles\DLL_CPP\splines.cpp(67,13): warning C4101: nbc: неиспользованная локальная переменная
+D:\EM_Docs_2022\Projects\Wpf_Dipoles\DLL_CPP\splines.cpp(274,17): warning C4101: nbc: неиспользованная локальная переменная
+D:\EM_Docs_2022\Projects\Wpf_Dipoles\DLL_CPP\splines.cpp(482,13): warning C4101: nbc: неиспользованная локальная переменная
+  Создание кода...
+     Создается библиотека D:\EM_Docs_2022\Projects\Wpf_Dipoles\x64\Debug\DLL_CPP.lib и объект D:\EM_Docs_2022\Projects\Wpf_Dipoles\x64\Debug\DLL_CPP.exp
+  DLL_CPP.vcxproj -> D:\EM_Docs_2022\Projects\Wpf_Dipoles\x64\Debug\DLL_CPP.dll
