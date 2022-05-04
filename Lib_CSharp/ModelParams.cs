@@ -70,7 +70,7 @@ namespace Lib_CSharp
             }
         }
 
-        public ModelParams(double eps1 = 6, double eps2 = 2, double h = 2, 
+        public ModelParams(double eps1 = 2, double eps2 = 4, double h = 2, 
                            double ro = 1, double z0 = 0.01, double z = 0, double omega = 100000)
         {
             this.eps1 = eps1;
