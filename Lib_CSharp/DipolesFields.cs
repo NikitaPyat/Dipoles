@@ -202,7 +202,7 @@ namespace Lib_CSharp
             fValues[3] = fValues[1];     // Dublicate
         }
 
-        public Complex Ez_eps2_plus_delta(double delta, double lambda)
+        public Complex Ez_eps2_plus_delta_hd(double delta, double lambda)
         {
             Complex tmp = new Complex(lambda * lambda - k0k0, 0);
             Complex nu0 = Complex.Sqrt(tmp);
@@ -262,7 +262,7 @@ namespace Lib_CSharp
             return result;
         }
 
-        public Complex Ez_eps1_plus_delta(double delta, double lambda)
+        public Complex Ez_eps1_plus_delta_hd(double delta, double lambda)
         {
             Complex tmp = new Complex(lambda * lambda - k0k0, 0);
             Complex nu0 = Complex.Sqrt(tmp);
@@ -324,7 +324,7 @@ namespace Lib_CSharp
             return result;
         }
 
-        public Complex Ez_h_plus_delta(double delta, double lambda)
+        public Complex Ez_h_plus_delta_hd(double delta, double lambda)
         {
             Complex tmp = new Complex(lambda * lambda - k0k0, 0);
             Complex nu0 = Complex.Sqrt(tmp);
@@ -382,7 +382,7 @@ namespace Lib_CSharp
             return result;
         }
 
-        public Complex dEzdeps2(double delta, double lambda)
+        public Complex dEzdeps2_hd(double delta, double lambda)
         {
             Complex tmp = new Complex(lambda * lambda - k0k0, 0);
             Complex nu0 = Complex.Sqrt(tmp);
@@ -433,7 +433,7 @@ namespace Lib_CSharp
 
             Complex Ez_eps2 = wave * R0 * e_plus / nu0 + e_minus / nu0 + (nu0 * (R0 + F0) * e_plus * (nu0 - 1)) / k0k0;
 
-            Complex Ez_eps2_plus_delta_value = Ez_eps2_plus_delta(delta, lambda);
+            Complex Ez_eps2_plus_delta_value = Ez_eps2_plus_delta_hd(delta, lambda);
 
             if (Math.Abs(Ez_eps2.Real - Ez_eps2_plus_delta_value.Real) < 1e-20)
             {
@@ -445,7 +445,7 @@ namespace Lib_CSharp
             }
         }
 
-        public Complex dEzdh(double delta, double lambda)
+        public Complex dEzdh_hd(double delta, double lambda)
         {
             Complex tmp = new Complex(lambda * lambda - k0k0, 0);
             Complex nu0 = Complex.Sqrt(tmp);
@@ -496,7 +496,7 @@ namespace Lib_CSharp
 
             Complex Ez_h = wave * R0 * e_plus / nu0 + e_minus / nu0 + (nu0 * (R0 + F0) * e_plus * (nu0 - 1)) / k0k0;
 
-            Complex Ez_h_plus_delta_value = Ez_h_plus_delta(delta, lambda);
+            Complex Ez_h_plus_delta_value = Ez_h_plus_delta_hd(delta, lambda);
 
             if (Math.Abs(Ez_h.Real - Ez_h_plus_delta_value.Real) < 1e-20)
             {
@@ -508,7 +508,7 @@ namespace Lib_CSharp
             }
         }
 
-        public Complex dEzdeps1(double delta, double lambda)
+        public Complex dEzdeps1_hd(double delta, double lambda)
         {
             Complex tmp = new Complex(lambda * lambda - k0k0, 0);
             Complex nu0 = Complex.Sqrt(tmp);
@@ -559,7 +559,7 @@ namespace Lib_CSharp
 
             Complex Ez_eps1 =  wave * R0 * e_plus / nu0 + e_minus / nu0 + (nu0 * (R0 + F0) * e_plus * (nu0 - 1)) / k0k0;
 
-            Complex Ez_eps1_plus_delta_value = Ez_eps1_plus_delta(delta, lambda);
+            Complex Ez_eps1_plus_delta_value = Ez_eps1_plus_delta_hd(delta, lambda);
 
             if (Math.Abs(Ez_eps1.Real - Ez_eps1_plus_delta_value.Real) < 1e-20)
             {
@@ -570,9 +570,8 @@ namespace Lib_CSharp
             }
         }
 
-        public void Ez_deps1_hd_int_fun(double lambda, double[] fValues)
-        {
-            Complex pr = dEzdeps1(0.0001, lambda);
+        public void Ez_deps1_int_fun_hd(double lambda, double[] fValues) {
+            Complex pr = dEzdeps1_hd(0.0001, lambda);
             double result = Math.Sqrt(Math.Pow(pr.Real, 2) + Math.Pow(pr.Imaginary, 2)); 
 
             fValues[0] = result;   // Re W
@@ -581,9 +580,9 @@ namespace Lib_CSharp
             fValues[3] = fValues[1];     // Dublicate
         }
 
-        public void Ez_deps2_hd_int_fun(double lambda, double[] fValues)
+        public void Ez_deps2_int_fun_hd(double lambda, double[] fValues)
         {
-            Complex pr = dEzdeps2(0.0001, lambda);
+            Complex pr = dEzdeps2_hd(0.0001, lambda);
             double result = Math.Sqrt(Math.Pow(pr.Real, 2) + Math.Pow(pr.Imaginary, 2));
 
             fValues[0] = result;   // Re W
@@ -592,9 +591,9 @@ namespace Lib_CSharp
             fValues[3] = fValues[1];     // Dublicate
         }
 
-        public void Ez_dh_hd_int_fun(double lambda, double[] fValues)
+        public void Ez_dh_int_fun_hd(double lambda, double[] fValues)
         {
-            Complex pr = dEzdh(0.0001, lambda);
+            Complex pr = dEzdh_hd(0.0001, lambda);
             double result = Math.Sqrt(Math.Pow(pr.Real, 2) + Math.Pow(pr.Imaginary, 2));
 
             fValues[0] = result;   // Re W
@@ -602,6 +601,343 @@ namespace Lib_CSharp
             fValues[2] = fValues[0];     // Dublicate
             fValues[3] = fValues[1];     // Dublicate
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public Complex Ez_eps2_plus_delta_vd(double delta, double lambda)
+        {
+            this.k2k2 += delta * this.k0k0;
+            this.k21 += delta / eps1;
+
+            Complex tmp = new Complex(lambda * lambda - k0k0, 0);
+            Complex nu0 = Complex.Sqrt(tmp);
+
+            tmp = new Complex(lambda * lambda - k1k1, 0);
+            Complex nu1 = Complex.Sqrt(tmp);
+            Complex nu1k21 = k21 * nu1;
+
+            tmp = new Complex(lambda * lambda - k2k2, 0);
+            Complex nu2 = Complex.Sqrt(tmp);
+
+            Complex e1 = Complex.Exp(-2 * nu1 * h);
+            Complex F1 = (nu1k21 - nu2) / (nu1k21 + nu2) * e1;
+
+            Complex G0;
+
+            if (Math.Abs(lambda * lambda - k1k1) > 1.0E-16)
+            {
+                Complex G0N = k10 * (F1 + 1);
+                Complex G0D = nu0 * G0N - nu1 * (F1 - 1);
+                G0 = 2 * G0N / G0D;
+
+            }
+            else
+            {
+                Complex G0N = k10 * (k21 + h * nu2);
+                Complex G0D = 2 * G0N * nu0 + nu2 * (1 - F1);
+                G0 = 4 * G0N / G0D;
+            }
+            Complex e0 = Complex.Exp(-nu0 * (z + z0));
+            double nu02 = lambda * lambda - k0k0;
+            Complex result = wave * G0 * e0 * (1 + nu02 / k0k0);   // k0k0??
+
+            this.k2k2 = this.k0k0 * this.eps2;
+            this.k21 = this.eps2 / this.eps1;
+
+            return result;
+        }
+
+        public Complex Ez_eps1_plus_delta_vd(double delta, double lambda)
+        {
+
+            this.k1k1 += delta * this.k0k0;
+            this.k10 += delta;
+            this.k21 = this.eps2 / (this.eps1 + delta);
+
+            Complex tmp = new Complex(lambda * lambda - k0k0, 0);
+            Complex nu0 = Complex.Sqrt(tmp);
+
+            tmp = new Complex(lambda * lambda - k1k1, 0);
+            Complex nu1 = Complex.Sqrt(tmp);
+            Complex nu1k21 = k21 * nu1;
+
+            tmp = new Complex(lambda * lambda - k2k2, 0);
+            Complex nu2 = Complex.Sqrt(tmp);
+
+            Complex e1 = Complex.Exp(-2 * nu1 * h);
+            Complex F1 = (nu1k21 - nu2) / (nu1k21 + nu2) * e1;
+
+            Complex G0;
+
+            if (Math.Abs(lambda * lambda - k1k1) > 1.0E-16)
+            {
+                Complex G0N = k10 * (F1 + 1);
+                Complex G0D = nu0 * G0N - nu1 * (F1 - 1);
+                G0 = 2 * G0N / G0D;
+
+            }
+            else
+            {
+                Complex G0N = k10 * (k21 + h * nu2);
+                Complex G0D = 2 * G0N * nu0 + nu2 * (1 - F1);
+                G0 = 4 * G0N / G0D;
+            }
+            Complex e0 = Complex.Exp(-nu0 * (z + z0));
+            double nu02 = lambda * lambda - k0k0;
+
+            this.k1k1 = this.k0k0 * this.eps1;
+            this.k10 = this.eps1;  // eps1 / eps0
+            this.k21 = this.eps2 / this.eps1;
+
+            Complex result = wave * G0 * e0 * (1 + nu02 / k0k0);   // k0k0??
+
+            return result;
+        }
+
+        public Complex Ez_h_plus_delta_vd(double delta, double lambda)
+        {
+            this.h += delta;
+
+            Complex tmp = new Complex(lambda * lambda - k0k0, 0);
+            Complex nu0 = Complex.Sqrt(tmp);
+
+            tmp = new Complex(lambda * lambda - k1k1, 0);
+            Complex nu1 = Complex.Sqrt(tmp);
+            Complex nu1k21 = k21 * nu1;
+
+            tmp = new Complex(lambda * lambda - k2k2, 0);
+            Complex nu2 = Complex.Sqrt(tmp);
+
+            Complex e1 = Complex.Exp(-2 * nu1 * h);
+            Complex F1 = (nu1k21 - nu2) / (nu1k21 + nu2) * e1;
+
+            Complex G0;
+
+            if (Math.Abs(lambda * lambda - k1k1) > 1.0E-16)
+            {
+                Complex G0N = k10 * (F1 + 1);
+                Complex G0D = nu0 * G0N - nu1 * (F1 - 1);
+                G0 = 2 * G0N / G0D;
+
+            }
+            else
+            {
+                Complex G0N = k10 * (k21 + h * nu2);
+                Complex G0D = 2 * G0N * nu0 + nu2 * (1 - F1);
+                G0 = 4 * G0N / G0D;
+            }
+            Complex e0 = Complex.Exp(-nu0 * (z + z0));
+
+            double nu02 = lambda * lambda - k0k0;
+            Complex result = wave * G0 * e0 * (1 + nu02 / k0k0);   // k0k0??
+
+            this.h -= delta;
+
+            return result;
+        }
+
+        public Complex dEzdeps2_vd(double delta, double lambda)
+        {
+            Complex tmp = new Complex(lambda * lambda - k0k0, 0);
+            Complex nu0 = Complex.Sqrt(tmp);
+
+            tmp = new Complex(lambda * lambda - k1k1, 0);
+            Complex nu1 = Complex.Sqrt(tmp);
+            Complex nu1k21 = k21 * nu1;
+
+            tmp = new Complex(lambda * lambda - k2k2, 0);
+            Complex nu2 = Complex.Sqrt(tmp);
+
+            Complex e1 = Complex.Exp(-2 * nu1 * h);
+            Complex F1 = (nu1k21 - nu2) / (nu1k21 + nu2) * e1;
+
+            Complex G0;
+
+            if (Math.Abs(lambda * lambda - k1k1) > 1.0E-16)
+            {
+                Complex G0N = k10 * (F1 + 1);
+                Complex G0D = nu0 * G0N - nu1 * (F1 - 1);
+                G0 = 2 * G0N / G0D;
+
+            }
+            else
+            {
+                Complex G0N = k10 * (k21 + h * nu2);
+                Complex G0D = 2 * G0N * nu0 + nu2 * (1 - F1);
+                G0 = 4 * G0N / G0D;
+            }
+            Complex e0 = Complex.Exp(-nu0 * (z + z0));
+            double nu02 = lambda * lambda - k0k0;
+            Complex Ez_eps2 = wave * G0 * e0 * (1 + nu02 / k0k0);   // k0k0??
+
+            Complex Ez_eps2_plus_delta_value = Ez_eps2_plus_delta_vd(delta, lambda);
+
+            if (Math.Abs(Ez_eps2.Real - Ez_eps2_plus_delta_value.Real) < 1e-20)
+            {
+                return 0;
+            }
+            else
+            {
+                return (Ez_eps2_plus_delta_value - Ez_eps2) / delta / Math.Sqrt(Math.Pow(Ez_eps2.Real, 2) + Math.Pow(Ez_eps2.Imaginary, 2));
+            }
+        }
+
+        public Complex dEzdh_vd(double delta, double lambda)
+        {
+            Complex tmp = new Complex(lambda * lambda - k0k0, 0);
+            Complex nu0 = Complex.Sqrt(tmp);
+
+            tmp = new Complex(lambda * lambda - k1k1, 0);
+            Complex nu1 = Complex.Sqrt(tmp);
+            Complex nu1k21 = k21 * nu1;
+
+            tmp = new Complex(lambda * lambda - k2k2, 0);
+            Complex nu2 = Complex.Sqrt(tmp);
+
+            Complex e1 = Complex.Exp(-2 * nu1 * h);
+            Complex F1 = (nu1k21 - nu2) / (nu1k21 + nu2) * e1;
+
+            Complex G0;
+
+            if (Math.Abs(lambda * lambda - k1k1) > 1.0E-16)
+            {
+                Complex G0N = k10 * (F1 + 1);
+                Complex G0D = nu0 * G0N - nu1 * (F1 - 1);
+                G0 = 2 * G0N / G0D;
+
+            }
+            else
+            {
+                Complex G0N = k10 * (k21 + h * nu2);
+                Complex G0D = 2 * G0N * nu0 + nu2 * (1 - F1);
+                G0 = 4 * G0N / G0D;
+            }
+            Complex e0 = Complex.Exp(-nu0 * (z + z0));
+
+            double nu02 = lambda * lambda - k0k0;
+            Complex Ez_h = wave * G0 * e0 * (1 + nu02 / k0k0);   // k0k0??
+
+            Complex Ez_h_plus_delta_value = Ez_h_plus_delta_vd(delta, lambda);
+
+            if (Math.Abs(Ez_h.Real - Ez_h_plus_delta_value.Real) < 1e-20)
+            {
+                return 0;
+            }
+            else
+            {
+                return (Ez_h_plus_delta_value - Ez_h) / delta / Math.Sqrt(Math.Pow(Ez_h.Real, 2) + Math.Pow(Ez_h.Imaginary, 2));
+            }
+        }
+
+        public Complex dEzdeps1_vd(double delta, double lambda)
+        {
+            Complex tmp = new Complex(lambda * lambda - k0k0, 0);
+            Complex nu0 = Complex.Sqrt(tmp);
+
+            tmp = new Complex(lambda * lambda - k1k1, 0);
+            Complex nu1 = Complex.Sqrt(tmp);
+            Complex nu1k21 = k21 * nu1;
+
+            tmp = new Complex(lambda * lambda - k2k2, 0);
+            Complex nu2 = Complex.Sqrt(tmp);
+
+            Complex e1 = Complex.Exp(-2 * nu1 * h);
+            Complex F1 = (nu1k21 - nu2) / (nu1k21 + nu2) * e1;
+
+            Complex G0;
+
+            if (Math.Abs(lambda * lambda - k1k1) > 1.0E-16)
+            {
+                Complex G0N = k10 * (F1 + 1);
+                Complex G0D = nu0 * G0N - nu1 * (F1 - 1);
+                G0 = 2 * G0N / G0D;
+
+            }
+            else
+            {
+                Complex G0N = k10 * (k21 + h * nu2);
+                Complex G0D = 2 * G0N * nu0 + nu2 * (1 - F1);
+                G0 = 4 * G0N / G0D;
+            }
+            Complex e0 = Complex.Exp(-nu0 * (z + z0));
+
+            double nu02 = lambda * lambda - k0k0;
+            Complex Ez_eps1 = wave * G0 * e0 * (1 + nu02 / k0k0);   // k0k0??
+            Complex Ez_eps1_plus_delta_value = Ez_eps1_plus_delta_vd(delta, lambda);
+
+            if (Math.Abs(Ez_eps1.Real - Ez_eps1_plus_delta_value.Real) < 1e-20)
+            {
+                return 0;
+            }
+            else
+            {
+                return (Ez_eps1_plus_delta_value - Ez_eps1) / delta / Math.Sqrt(Math.Pow(Ez_eps1.Real, 2) + Math.Pow(Ez_eps1.Imaginary, 2));
+            }
+        }
+
+        public void Ez_deps1_int_fun_vd(double lambda, double[] fValues)
+        {
+            Complex pr = dEzdeps1_vd(0.0001, lambda);
+            double result = Math.Sqrt(Math.Pow(pr.Real, 2) + Math.Pow(pr.Imaginary, 2));
+
+            fValues[0] = result;   // Re W
+            fValues[1] = 0;   // Im W
+            fValues[2] = fValues[0];     // Dublicate
+            fValues[3] = fValues[1];     // Dublicate
+        }
+
+        public void Ez_deps2_int_fun_vd(double lambda, double[] fValues)
+        {
+            Complex pr = dEzdeps2_vd(0.0001, lambda);
+            double result = Math.Sqrt(Math.Pow(pr.Real, 2) + Math.Pow(pr.Imaginary, 2));
+
+            fValues[0] = result;   // Re W
+            fValues[1] = 0;   // Im W
+            fValues[2] = fValues[0];     // Dublicate
+            fValues[3] = fValues[1];     // Dublicate
+        }
+
+        public void Ez_dh_int_fun_vd(double lambda, double[] fValues)
+        {
+            Complex pr = dEzdh_vd(0.0001, lambda);
+            double result = Math.Sqrt(Math.Pow(pr.Real, 2) + Math.Pow(pr.Imaginary, 2));
+
+            fValues[0] = result;   // Re W
+            fValues[1] = 0;   // Im W
+            fValues[2] = fValues[0];     // Dublicate
+            fValues[3] = fValues[1];     // Dublicate
+        }
+
+
+
+
+
+
+
+
+
+
+
+
         public bool CalculateFields(double[] ros, List<double[]> res)
         {
             try
@@ -613,7 +949,7 @@ namespace Lib_CSharp
                 for (int jro = 0; jro < ros.Length; jro++)
                 {
                     double rr = ros[jro];
-                    HankelTransformsByAnderson.call(Ez_dh_hd_int_fun, rr, eps, 4, 0, resH, c, cmax);
+                    HankelTransformsByAnderson.call(Ez_dh_int_fun_vd, rr, eps, 4, 0, resH, c, cmax);
                     res[0][jro] = resH[0];
                     res[1][jro] = resH[1];
                     res[2][jro] = resH[2] / k0k0;
